@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('competence_offre', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('offre_emploi_id')->constrained()->onDelete('cascade');
+            $table->foreignId('competence_id')->constrained()->onDelete('cascade');
+            $table->enum('niveau_requis', ['debutant', 'intermediaire', 'avance', 'expert'])->default('intermediaire');
+            $table->boolean('est_obligatoire')->default(true);
+            $table->timestamps();
+            
+            $table->unique(['offre_emploi_id', 'competence_id']);
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('competence_offre');
+    }
+};
