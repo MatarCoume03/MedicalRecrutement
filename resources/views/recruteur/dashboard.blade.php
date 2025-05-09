@@ -150,15 +150,11 @@
                     @endforelse
                 </ul>
             </div>
-            @if($candidaturesRecent->count() > 0)
-                <div class="bg-gray-50 px-4 py-4 sm:px-6 border-t border-gray-200">
-                    <div class="text-sm">
-                        <a href="{{ route('recruteur.candidatures', $offre) }}" class="font-medium text-blue-600 hover:text-blue-500">
-                            Voir toutes les candidatures
-                        </a>
-                    </div>
-                </div>
-            @endif
+            @if($offresRecent->isNotEmpty())
+            <a href="{{ route('recruteur.candidatures', $offresRecent->first()) }}" class="font-medium text-blue-600 hover:text-blue-500">
+                Voir les candidatures récentes
+            </a>
+        @endif
         </div>
     </div>
 

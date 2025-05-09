@@ -106,6 +106,16 @@ class RecruteurController extends Controller
         return redirect()->route('recruteur.profil')->with('success', 'Profil mis à jour avec succès.');
     }
 
+        public function mesCandidatures()
+    {
+        $offreIds = OffreEmploi::where('user_id', auth()->id())->pluck('_id');
+        $candidatures = Candidature::whereIn('offre_emploi_id', $offreIds)
+                        ->with(['user', 'offreEmploi'])
+                        ->paginate(10);
+
+        return view('recruteur.candidatures', ['candidatures' => $candidatures]);
+    }
+
     public function mesOffres()
     {
         $offres = Auth::user()

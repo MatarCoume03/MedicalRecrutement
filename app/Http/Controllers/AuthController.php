@@ -19,7 +19,26 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::attempt($credentials)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Identifiants incorrects'
+            ], 401);
+        }
+    
+        $user = Auth::user();
+        $token = $user->createToken('API_TOKEN')->plainTextToken;
+    
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+            'token' => $token  // Assurez-vous que ce champ existe
+        ]);
+
+       /* $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
@@ -31,7 +50,7 @@ class AuthController extends Controller
 
         return back()->withErrors([
             'email' => 'Les identifiants fournis ne correspondent pas à nos enregistrements.',
-        ]);
+        ]);*/
     }
 
     public function showAccountTypeSelection()

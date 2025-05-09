@@ -1,17 +1,43 @@
 <?php
 
+// App/Http/Middleware/Role.php
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Role
+class Role  // Supprimez "extends Middleware"
 {
+    public function handle(Request $request, Closure $next, ...$roles)
+    {
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $user = auth()->user();
+        
+        if (empty($roles) || in_array($user->type, $roles)) {
+            return $next($request);
+        }
+
+        return response()->json(['error' => 'Forbidden'], 403);
+    }
+}
+
+/*namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Foundation\Http\Middleware\Role as Middleware;
+
+class Role extends Middleware
+{*/
     /**
      * Vérifie que l'utilisateur a le bon rôle
      */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    /*public function handle(Request $request, Closure $next, ...$roles): Response
     {
         // If user is not authenticated
         if (!auth()->check()) {
@@ -34,4 +60,4 @@ class Role
     
         return redirect()->back()->with('error', $message);
     }
-}
+}*/
